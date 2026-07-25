@@ -310,6 +310,11 @@ proc czura_on_pubmsg {nick uhost hand chan text} {
             putlog "\002\[SpamBan\]\002 Spam detected from $nick ($hit_count pattern hits) in $chan"
             czura_write_log "TRIGGER" $chan $nick $uhost "Spam threshold reached ($hit_count pattern hits)"
 
+            # Send explanation to the channel regardless of bot op status
+            puthelp "PRIVMSG $chan :You are seeing those messages because our channel is being targeted by an automated spam bot running what is known as a Joe-Job - a malicious spam campaign designed to look like it was sent by a specific person, but actually created by an attacker to harass or ruin that person's reputation."
+            # puthelp "PRIVMSG $chan :The messages you are seeing typically look something like this:"
+            # puthelp "PRIVMSG $chan :\u201cHi Guys! It's Madeleine Czura! Just thought I'd leave my number here in case you're lonely ;) ...\u201d followed by a UK phone number, personal and professional email addresses, and social media links."
+
             if {[czura_is_opped $chan]} {
                 czura_ban_kick $chan $nick $uhost
             } else {
@@ -321,11 +326,6 @@ proc czura_on_pubmsg {nick uhost hand chan text} {
                 czura_write_log "WHOIS" $chan $nick $uhost "Attempting WHOIS on $nick for host info..."
                 putquick "WHOIS $nick"
             }
-
-            # Send explanation to the channel
-            puthelp "PRIVMSG $chan :You are seeing those messages because our channel is being targeted by an automated spam bot running what is known as a Joe-Job - a malicious spam campaign designed to look like it was sent by a specific person, but actually created by an attacker to harass or ruin that person's reputation."
-            # puthelp "PRIVMSG $chan :The messages you are seeing typically look something like this:"
-            # puthelp "PRIVMSG $chan :\u201cHi Guys! It's Madeleine Czura! Just thought I'd leave my number here in case you're lonely ;) ...\u201d followed by a UK phone number, personal and professional email addresses, and social media links."
 
             # Clear this nick's tracker so we don't re-trigger
             if {[info exists czura_hits($key)]} {
